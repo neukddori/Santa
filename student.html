@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>컴교실 산타 마을 — 나만의 눈사람</title>
+<meta name="description" content="이름을 쓰고 모자와 목도리를 골라 마을로 보내 보세요!">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/student.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛄</text></svg>">
+</head>
+<body class="student-body">
+
+<div class="bg-layer">
+  <div class="bg-photo"></div>
+  <div class="bg-stars"></div>
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+</div>
+<canvas id="snowCan" class="snow-layer"></canvas>
+
+<div class="s-shell">
+  <header class="s-top">
+    <div class="s-brand"><span class="s-logo">⛄</span><span>컴교실 산타 마을</span></div>
+    <div class="s-live"><i class="dot"></i>마을에 친구 <b id="friendNum">0</b>명 있어요</div>
+  </header>
+
+  <div class="s-head">
+    <h1>나만의 눈사람 만들기</h1>
+    <p>이름을 쓰고 모자와 목도리를 골라 보내세요!</p>
+  </div>
+
+  <main class="s-main">
+    <!-- ── 왼쪽: 눈사람 꾸미기 ─────────────────────────── -->
+    <section class="card builder">
+      <div class="b-head">
+        <div class="b-title">⛄ 나만의 눈사람</div>
+        <div class="b-note" id="bNote">친구들도 같이 보고 있어요</div>
+      </div>
+
+      <div class="b-body">
+        <div class="preview" id="preview">
+          <div class="pv-snow" aria-hidden="true"></div>
+          <div class="pv-tag"><span class="name-tag me" id="pvTag">친구</span></div>
+          <div class="pv-art" id="pvArt"></div>
+          <div class="pv-hint">마음에 들면 마을로 보내요!</div>
+        </div>
+
+        <div class="controls">
+          <label class="ctl-label first" for="nameInput">✏️ 이름 <span class="hint">한글 2~6자</span></label>
+          <input id="nameInput" class="name-input" type="text" maxlength="6" placeholder="이름을 쓰세요"
+                 autocomplete="off" spellcheck="false" aria-describedby="nameErr">
+          <div class="err" id="nameErr"></div>
+
+          <div class="ctl-label">🎩 모자</div>
+          <div class="opt-row" id="hatRow"></div>
+
+          <div class="ctl-label">🧣 목도리 색</div>
+          <div class="swatch-row" id="scarfRow"></div>
+
+          <div class="ctl-label">😊 표정</div>
+          <div class="opt-row" id="faceRow"></div>
+
+          <div class="tip">💡 모자와 색은 언제든 다시 바꿀 수 있어요!</div>
+        </div>
+      </div>
+
+      <button class="send-btn" id="sendBtn">
+        <span class="sb-ico">⛄</span><span class="sb-text">마을로 보내기</span>
+      </button>
+    </section>
+
+    <!-- ── 오른쪽: 오늘의 놀이 ─────────────────────────── -->
+    <section class="menu">
+      <div class="m-head">
+        <h2>오늘은 뭐 하고 놀까?</h2>
+        <span class="m-count">4가지 놀이</span>
+      </div>
+
+      <div class="cards">
+        <button class="mcard" data-game="snow">
+          <div class="mc-ico ico-snow">❄️</div>
+          <div class="mc-title">눈싸움</div>
+          <div class="mc-sub">친구 눈사람 맞히기</div>
+          <div class="mc-go">놀러 가기 <span>→</span></div>
+        </button>
+        <button class="mcard" data-game="sled">
+          <div class="mc-ico ico-sled">🛷</div>
+          <div class="mc-title">썰매 타기</div>
+          <div class="mc-sub">언덕에서 씽씽~</div>
+          <div class="mc-go">놀러 가기 <span>→</span></div>
+        </button>
+        <button class="mcard" data-game="type">
+          <div class="mc-ico ico-type">⌨️</div>
+          <div class="mc-title">겨울 타자 연습</div>
+          <div class="mc-sub">겨울 단어를 쳐 보기</div>
+          <div class="mc-go">놀러 가기 <span>→</span></div>
+        </button>
+        <button class="mcard" data-game="wish">
+          <div class="mc-ico ico-wish">🏮</div>
+          <div class="mc-title">소원 등불 적기</div>
+          <div class="mc-sub">내 소원을 하늘로</div>
+          <div class="mc-go">놀러 가기 <span>→</span></div>
+        </button>
+      </div>
+
+      <div class="carol-row">
+        <div class="carol-ico">🎵</div>
+        <div class="carol-txt">
+          <b>캐롤 듣기</b>
+          <span>크리스마스 캐롤 3곡 · <em id="songName">징글벨</em></span>
+        </div>
+        <button class="switch" id="carolSwitch" aria-label="캐롤 켜기/끄기"></button>
+      </div>
+
+      <p class="m-note">🎄 보낸 눈사람은 선생님 큰 화면에 이름표가 달려 나타나요!</p>
+    </section>
+  </main>
+</div>
+
+<!-- 선생님 알림 배너 -->
+<div class="round-pop" id="roundPop">
+  <div class="rp-emoji" id="rpEmoji">❄️</div>
+  <div class="rp-body">
+    <b id="rpTitle">선생님 알림</b>
+    <span id="rpSub">선생님이 놀이를 시작하면 여기에 알려 드려요</span>
+  </div>
+  <button class="rp-go" id="rpGo">지금 놀기</button>
+  <button class="rp-x" id="rpClose" aria-label="닫기">✕</button>
+</div>
+
+<!-- 작은 알림 -->
+<div class="mini-toast" id="miniToast"></div>
+
+<!-- ══════════ 눈싸움 ══════════ -->
+<div class="game-back" id="gameSnow">
+  <div class="game-shell">
+    <header class="g-head">
+      <div class="g-title">❄️ 눈싸움</div>
+      <div class="g-hud">
+        <div class="hud-item"><span>점수</span><b id="sbScore">0</b></div>
+        <div class="hud-item"><span>맞힌 눈덩이</span><b id="sbHits">0</b></div>
+        <div class="hud-item time"><span>남은 시간</span><b id="sbTime">60</b></div>
+      </div>
+      <button class="g-close" data-close-game="gameSnow">✕</button>
+    </header>
+    <div class="g-stage" id="sbStage">
+      <canvas id="sbCanvas"></canvas>
+      <div class="g-start" id="sbStart">
+        <div class="gs-emoji">❄️</div>
+        <div class="gs-title">친구 눈사람을 맞혀 보세요!</div>
+        <div class="gs-sub">화면을 누르면 그 곳으로 눈덩이가 날아가요 (스페이스바도 좋아요)</div>
+        <button class="gs-btn" id="sbStartBtn">시작하기</button>
+      </div>
+      <div class="g-result hidden" id="sbResult">
+        <div class="gr-emoji">🎉</div>
+        <div class="gr-title">잘했어요!</div>
+        <div class="gr-score"><b id="sbFinal">0</b> 점</div>
+        <div class="gr-line" id="sbLine">눈덩이 0개를 맞혔어요</div>
+        <div class="gr-btns">
+          <button class="gr-btn again" id="sbAgain">한 번 더</button>
+          <button class="gr-btn close" data-close-game="gameSnow">마을로 돌아가기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 썰매 타기 ══════════ -->
+<div class="game-back" id="gameSled">
+  <div class="game-shell">
+    <header class="g-head">
+      <div class="g-title">🛷 썰매 타기</div>
+      <div class="g-hud">
+        <div class="hud-item"><span>점수</span><b id="slScore">0</b></div>
+        <div class="hud-item"><span>선물</span><b id="slGifts">0</b></div>
+        <div class="hud-item"><span>하트</span><b id="slLives">❤❤❤</b></div>
+      </div>
+      <button class="g-close" data-close-game="gameSled">✕</button>
+    </header>
+    <div class="g-stage" id="slStage">
+      <canvas id="slCanvas"></canvas>
+      <div class="g-start" id="slStart">
+        <div class="gs-emoji">🛷</div>
+        <div class="gs-title">눈 언덕을 씽씽 내려가요!</div>
+        <div class="gs-sub">눈덩이와 나무를 뛰어넘고, 선물 상자를 모아 보세요<br>화면을 누르거나 스페이스바를 누르면 점프!</div>
+        <button class="gs-btn" id="slStartBtn">시작하기</button>
+      </div>
+      <div class="g-result hidden" id="slResult">
+        <div class="gr-emoji">🎁</div>
+        <div class="gr-title">씽씽 잘 탔어요!</div>
+        <div class="gr-score"><b id="slFinal">0</b> 점</div>
+        <div class="gr-line" id="slLine">선물 0개를 모았어요</div>
+        <div class="gr-btns">
+          <button class="gr-btn again" id="slAgain">한 번 더</button>
+          <button class="gr-btn close" data-close-game="gameSled">마을로 돌아가기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 겨울 타자 연습 ══════════ -->
+<div class="game-back" id="gameType">
+  <div class="game-shell type-shell">
+    <header class="g-head">
+      <div class="g-title">⌨️ 겨울 타자 연습</div>
+      <div class="type-tabs" id="typeTabs">
+        <button class="tt on" data-mode="seat">1 · 자리 연습</button>
+        <button class="tt" data-mode="word">2 · 캐롤·단어</button>
+        <button class="tt" data-mode="chain">3 · 끝말잇기</button>
+      </div>
+      <button class="g-close" data-close-game="gameType">✕</button>
+    </header>
+    <div class="type-body" id="typeBody"></div>
+  </div>
+</div>
+
+<!-- ══════════ 소원 등불 ══════════ -->
+<div class="modal-back" id="wishModal">
+  <div class="modal wish-modal">
+    <button class="x" data-close="wishModal">✕</button>
+    <div class="wm-emoji">🏮</div>
+    <h2>내 소원을 등불에 적어요</h2>
+    <p class="sub">적어서 보내면 <b>선생님 큰 화면 하늘</b>로 둥실둥실 올라가요.</p>
+    <textarea id="wishInput" maxlength="60" placeholder="예) 우리 반 모두 즐거운 겨울방학을 보내게 해 주세요!"></textarea>
+    <div class="wm-foot"><span id="wishCount">0</span> / 60자</div>
+    <button class="wm-btn" id="wishSend">🏮 소원 등불 띄우기</button>
+    <div class="wm-done hidden" id="wishDone">
+      <div class="wd-emoji">✨</div>
+      <b>등불이 하늘로 올라갔어요!</b>
+      <span>선생님 큰 화면을 올려다보세요 🏮</span>
+      <button class="wm-again" id="wishAgain">한 번 더 적기</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/snowman.js"></script>
+<script src="js/snow.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/net.js"></script>
+<script src="js/games/words.js"></script>
+<script src="js/games/snowball.js"></script>
+<script src="js/games/sled.js"></script>
+<script src="js/games/typing.js"></script>
+<script src="js/student.js"></script>
+</body>
+</html>
