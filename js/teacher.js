@@ -307,7 +307,7 @@
       arrivals = [];
       var n = names.length;
       if (!n) return;
-      var count = allStudents().filter(function (s) { return s.sent; }).length;
+      var count = Object.keys(villagerEl).length;
       if (n === 1) showToast('⛄', names[0] + ' 님이 눈사람을 보냈어요!', '방금 도착 · 마을 눈사람 ' + count + '개');
       else showToast('⛄', names[0] + ' 님 외 ' + (n - 1) + '명이 눈사람을 보냈어요!', '방금 도착 · 마을 눈사람 ' + count + '개');
     }, 800);

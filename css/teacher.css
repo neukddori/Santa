@@ -107,6 +107,7 @@ html, body.teacher-body {
   width: 54px; height: 54px;
   border-radius: 17px;
   flex: none;
+  overflow: hidden;
   background-image: var(--avatar-url);
   background-size: 210%;
   background-position: 50% 18%;
@@ -523,6 +524,7 @@ html, body.teacher-body {
   color: #cfe0f8;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
   z-index: 20;
   backdrop-filter: blur(6px);
 }
